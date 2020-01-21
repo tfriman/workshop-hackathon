@@ -1,8 +1,5 @@
 package com.redhat.cajun.navy.incident.listener;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -17,6 +14,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 public class UpdateIncidentCommandListener {
@@ -46,10 +46,11 @@ public class UpdateIncidentCommandListener {
 
         Message<UpdateIncidentCommand> message;
         try {
-            message = new ObjectMapper().readValue(messageAsJson, new TypeReference<Message<UpdateIncidentCommand>>() {});
+            message = new ObjectMapper().readValue(messageAsJson, new TypeReference<Message<UpdateIncidentCommand>>() {
+            });
             Incident incident = message.getBody().getIncident();
 
-            log.debug("Processing '" + UPDATE_INCIDENT_COMMAND + "' message for incident '" + incident.getId() + "'");
+            log.debug("Processing {} message for incident '{}'", UPDATE_INCIDENT_COMMAND, incident.getId());
             incidentService.updateIncident(incident);
         } catch (Exception e) {
             log.error("Error processing msg " + messageAsJson, e);
